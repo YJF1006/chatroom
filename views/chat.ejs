@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>聊天</title>
+	<style>
+		body{
+			background-color: #ccc;
+		}
+		.control{
+			position: fixed;
+			bottom: 0;
+			left: 0;
+			width: 100%;
+			display: flex;  /* 伸缩布局  父盒子用display: flex;    z子盒子参与分配的写  flex: 数字即可; */
+		}
+		input{
+			font-size: 30px;
+			border:1px solid #ccc;
+		}
+		input:nth-child(1){
+			display: inline-block;
+			flex: 9        
+		}
+		input:nth-child(2){
+			flex: 1;
+			background-color: yellowgreen;
+		}
+		input:nth-child(2):visited{
+			flex: 1;
+			color: yellowgreen;
+		}
+		li{
+			list-style: none;
+			font: italic 700 16px 微软雅黑;
+		}
+		span{
+			font: italic 700 20px 微软雅黑;
+		}
+	</style>
+</head>
+<body>
+	<div class="wrapper">
+		<h1>奻翠翠翠聊天室欢迎您:<span id = "username"><%=username%></span></h1>
+		<div class="list">
+				
+		</div>
+		<div class="control">
+			<input type="text" id ="content" name= "content" >
+			<input type="button" id ="btn" value = "发送">
+		</div>
+	</div>
+</body>
+</html>
+
+<!-- 引入socket秘密文件 -->
+<script type="text/javascript" src="/socket.io/socket.io.js"></script>
+	<script type="text/javascript" src="/js/jquery-1.11.1.js"></script>
+	<script type="text/javascript">
+		var socket = io();
+		//按下回车发送内容
+		$("#content").keydown(function(e){
+			if(e.keyCode == 13){
+				//把文本框的内容上传：
+				socket.emit("chat",{
+					"content" : $("#content").val(),
+					"username" : $("#username").html()  
+					 //先把桌面上欢迎您的用户名传给服务器，服务器再传回来，这样便可以得到谁谁谁说
+				});
+				$(this).val("");
+			}
+		});
+		//点击发送发送内容
+		$("#btn").click(function(){	
+			//把文本框的内容上传和用户名上传
+			socket.emit("chat",{
+				"content" : $("#content").val(),
+				"username" : $("#username").html()
+			});	
+			$("#content").val("");
+		});
+
+		socket.on("chat",function(msg){
+			var html = "<li><b>" + msg.username + "：</b>"+ msg.content + "</li>";
+			$(".list").append(html);
+		});
+	</script>

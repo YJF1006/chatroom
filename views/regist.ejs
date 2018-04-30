@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>注册</title>
+	<style>
+
+		.wrapper{
+			width: 500px;
+			height:200px ;
+			position: absolute;	
+			margin:auto;
+			left: 0;
+			right: 0;
+			top: 0;
+			bottom: 0;
+			background-color: yellowgreen;
+			text-align: center;
+		}
+		.err{
+			width: 50%;
+			margin: 33px auto;
+			display: none;
+		}
+	</style>
+</head>
+<body>
+	
+	<div class="wrapper">
+		<h1>聊天注册</h1>
+		<form>
+			<label for="username">昵称</label>
+				<input type="text" id= "username" name = "username"><br>
+			<label for="password">密码</label>	
+				<input type="password" id= "password" name = "password"><br>
+			<label for="tel">电话</label>	
+				<input type="tel" id= "tel" name = "tel"><br>
+  <!--           <button type="button" id="btn">登录</button> -->
+            <input type="button" id="btn" value = "登录">
+			<div class="err"></div>
+		</form>
+	</div>
+</body>
+</html>
+
+<script type="text/javascript" src="/js/jquery-1.11.1.js"></script>
+<script>
+$("#btn").click(function(){
+	$.ajax({
+		url:"/doRegist",
+		type:"GET",
+		data:{
+			"username":$("#username").val(),
+			"password":$("#password").val(),
+		},
+		success:function(result){
+			console.log(result);
+			if(result == "-2"){   //名字重复
+				$(".err").css("background-color","red");			
+				$(".err").fadeIn();
+				$(".err").html("改昵称已被占用，请您重写书写");
+				window.location="/regist";
+			}
+			if(result == "-5"){   //服务器错误
+				$(".err").css("background-color","red");	
+				$(".err").fadeIn();
+				$(".err").html("服务器错误，请您刷新稍等");
+			}
+
+			if(result == "1"){   //注册登录 
+				alert("恭喜您，成功注册，即将前往登录");
+				window.location = "/login";
+			}
+		}
+	});
+});
+	
+
+
+</script>

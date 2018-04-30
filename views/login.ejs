@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>登录</title>
+	<style>
+
+		.wrapper{
+			width: 500px;
+			height:250px ;
+			position: absolute;	
+			margin:auto;
+			left: 0;
+			right: 0;
+			top: 0;
+			bottom: 0;
+			background-color: yellowgreen;
+			text-align: center;
+		}
+		.err{
+			width: 50%;
+			background-color: red;
+			margin: 33px auto;
+			display: none;
+		}
+	</style>
+</head>
+<body>
+	
+	<div class="wrapper">
+		<h1>聊天登录</h1>
+		<form>
+			<label for="username">用户名</label>
+				<input type="text" id= "username" name = "username"><br>
+			<label for="password">密码</label>	
+				<input type="text" id= "password" name = "password"><br>
+            <button type="button" id="btn">登陆</button>
+			<div class="err"></div>
+		</form>
+	</div>
+</body>
+</html>
+
+<script type="text/javascript" src="/js/jquery-1.11.1.js"></script>
+<script>
+	//文本框获得焦点的时候 ，错误提示消失
+	 $("input").focus(function () {
+        $(".err").fadeOut();
+    });
+
+	$("#btn").click(function(){
+		$.ajax({
+		url:"/doLogin",
+		type:"GET",
+		data:{
+			"username":$("#username").val(),
+			"password":$("#password").val()
+		},
+		success:function(result){
+			console.log(result);
+			if(result == "-1"){   //名字重复
+				$(".err").fadeIn();
+				$(".err").html("密码错误，请您重写书写");
+				window.location="/";
+			}
+			if(result == "-5"){   //服务器错误
+				$(".err").fadeIn();
+				$(".err").html("服务器错误，请您刷新稍等");
+			}
+			if(result =="1"){   //成功登录 
+				window.location="/chat";
+			}
+		}
+	});
+	});
+
+
+</script>
